@@ -1,35 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Quick Compress</title>
-<p>
-Compress JPG, PNG and other images quickly.
-Reduce file size while keeping good quality.
-</p>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>QuickCompress - Image Compressor</title>
+
+    <meta name="description"
+          content="Compress and resize images quickly and easily.">
 
     <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial;
-            background: #f5f5f5;
-            text-align: center;
-            padding: 30px;
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+            color: #222;
         }
 
         .box {
-            max-width: 500px;
-            margin: auto;
+            max-width: 600px;
+            margin: 20px auto;
             background: white;
             padding: 25px;
-            border-radius: 15px;
+            border-radius: 18px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
         }
 
         h1 {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
-        input {
-            margin: 20px;
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        #dropZone {
+            border: 2px dashed #888;
+            padding: 35px 15px;
+            margin: 20px 0;
+            border-radius: 14px;
+            cursor: pointer;
+            background: #fafafa;
+        }
+
+        #dropZone:hover {
+            background: #f0f0f0;
+        }
+
+        #dropZone h3 {
+            margin: 5px 0 10px;
+        }
+
+        #dropZone p {
+            color: #777;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .option {
+            margin: 18px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        select,
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
         }
 
         button {
@@ -37,230 +94,584 @@ Reduce file size while keeping good quality.
             border: none;
             border-radius: 8px;
             cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
         }
 
-        img {
-            max-width: 100%;
-            margin-top: 20px;
+        .compress-btn {
+            width: 100%;
+            background: #222;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .reset-btn {
+            background: #ddd;
+            color: #222;
+        }
+
+        button:hover {
+            opacity: 0.85;
         }
 
         #result {
+            margin-top: 25px;
+        }
+
+        .result-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 12px;
+            text-align: left;
+        }
+
+        .result-card img {
+            display: block;
+            max-width: 100%;
+            max-height: 250px;
+            margin: 15px auto;
+            border-radius: 8px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: #222;
+            color: white;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+        }
+
+        .privacy {
+            font-size: 13px;
+            color: #666;
             margin-top: 20px;
         }
-  select {
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-}
 
-button {
-    background: #222;
-    color: white;
-    font-size: 16px;
-}
+        .status {
+            font-weight: bold;
+            margin: 15px 0;
+        }
 
-button:hover {
-    opacity: 0.8;
-}
+        @media (max-width: 500px) {
 
-#result p {
-    font-size: 16px;
-}
+            body {
+                padding: 10px;
+            }
+
+            .box {
+                margin: 5px auto;
+                padding: 20px 15px;
+            }
+
+            h1 {
+                font-size: 27px;
+            }
+
+        }
 
     </style>
+
 </head>
+
 
 <body>
 
 <div class="box">
 
-    <h1>Image Compressor</h1>
+    <h1>QuickCompress</h1>
 
-    <p>Reduce your image size easily</p>
+    <p class="subtitle">
+        Compress and resize your images quickly and easily.
+    </p>
 
-<div id="dropZone" style="
-    border:2px dashed #888;
-    padding:30px;
-    margin:20px 0;
-    border-radius:12px;
-    cursor:pointer;
-">
-    <h3>Drag & Drop Images Here</h3>
-    <p>or click to select images</p>
-</div>
 
-    <input type="file" id="imageInput" accept="image/*" multiple>
-<br>
-	const dropZone = document.getElementById("dropZone");
-const imageInput = document.getElementById("imageInput");
+    <!-- Upload Area -->
 
-dropZone.onclick = function () {
-    imageInput.click();
-};
+    <div id="dropZone">
 
-dropZone.ondragover = function (e) {
-    e.preventDefault();
-};
+        <h3>📷 Drag & Drop Images Here</h3>
 
-dropZone.ondrop = function (e) {
-    e.preventDefault();
-    imageInput.files = e.dataTransfer.files;
-};
-    <br>
+        <p>or click to choose images</p>
 
-   <label>Target Size:</label>
+    </div>
 
-<select id="targetSize">
-    <option value="100">100 KB</option>
-    <option value="200">200 KB</option>
-    <option value="500">500 KB</option>
-    <option value="1024">1 MB</option>
-</select>
-    <br>
 
-    <button onclick="compressImage()">Compress Image</button>
+    <input
+        type="file"
+        id="imageInput"
+        accept="image/*"
+        multiple
+    >
+
+
+    <!-- Target Size -->
+
+    <div class="option">
+
+        <label for="targetSize">
+            Target Size
+        </label>
+
+        <select id="targetSize">
+
+            <option value="100">
+                100 KB
+            </option>
+
+            <option value="200" selected>
+                200 KB
+            </option>
+
+            <option value="500">
+                500 KB
+            </option>
+
+            <option value="1024">
+                1 MB
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- Resize -->
+
+    <div class="option">
+
+        <label for="resizeWidth">
+            Resize Width (optional)
+        </label>
+
+        <input
+            type="number"
+            id="resizeWidth"
+            placeholder="Example: 1080"
+            min="100"
+        >
+
+    </div>
+
+
+    <!-- Buttons -->
+
+    <button
+        class="compress-btn"
+        onclick="compressImage()">
+
+        ⚡ Compress Images
+
+    </button>
+
+
+    <button
+        class="reset-btn"
+        onclick="resetTool()">
+
+        🔄 Reset
+
+    </button>
+
+
+    <p class="privacy">
+        🔒 Your images are processed in your browser.
+        They are not uploaded to a server.
+    </p>
+
 
     <div id="result"></div>
 
-    <canvas id="canvas" style="display:none;"></canvas>
-
 </div>
+
 
 <script>
 
+
+/* =========================
+   DRAG & DROP
+========================= */
+
+const dropZone =
+    document.getElementById("dropZone");
+
+const imageInput =
+    document.getElementById("imageInput");
+
+
+dropZone.addEventListener("click", function () {
+
+    imageInput.click();
+
+});
+
+
+dropZone.addEventListener("dragover", function (event) {
+
+    event.preventDefault();
+
+    dropZone.style.background = "#eeeeee";
+
+});
+
+
+dropZone.addEventListener("dragleave", function () {
+
+    dropZone.style.background = "#fafafa";
+
+});
+
+
+dropZone.addEventListener("drop", function (event) {
+
+    event.preventDefault();
+
+    dropZone.style.background = "#fafafa";
+
+    imageInput.files = event.dataTransfer.files;
+
+});
+
+
+/* =========================
+   MAIN COMPRESS FUNCTION
+========================= */
+
 async function compressImage() {
 
-    const files = document.getElementById("imageInput").files;
-    const targetKB = Number(document.getElementById("targetSize").value);
-    const targetBytes = targetKB * 1024;
+    const files =
+        document.getElementById("imageInput").files;
+
+    const targetKB =
+        Number(
+            document.getElementById("targetSize").value
+        );
+
+    const targetBytes =
+        targetKB * 1024;
+
 
     if (files.length === 0) {
-        alert("Please select images");
+
+        alert("Please select at least one image.");
+
         return;
+
     }
 
-    const result = document.getElementById("result");
-    result.innerHTML = "<h3>Compressing...</h3>";
+
+    const result =
+        document.getElementById("result");
+
+
+    result.innerHTML =
+        "<p class='status'>⏳ Compressing...</p>";
+
 
     for (const file of files) {
 
-        await compressSingleImage(file, targetBytes);
+        await compressSingleImage(
+            file,
+            targetBytes
+        );
+
     }
+
 }
 
 
-function compressSingleImage(file, targetBytes) {
+/* =========================
+   SINGLE IMAGE
+========================= */
 
-    return new Promise((resolve) => {
+function compressSingleImage(
+    file,
+    targetBytes
+) {
+
+    return new Promise(function (resolve) {
 
         const img = new Image();
 
+        const imageURL =
+            URL.createObjectURL(file);
+
+
         img.onload = function () {
 
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
+            const canvas =
+                document.createElement("canvas");
 
-            canvas.width = img.width;
-            canvas.height = img.height;
+            const ctx =
+                canvas.getContext("2d");
 
-            ctx.drawImage(img, 0, 0);
+
+            /* Resize */
+
+            const resizeWidth =
+                Number(
+                    document.getElementById(
+                        "resizeWidth"
+                    ).value
+                );
+
+
+            let width = img.width;
+            let height = img.height;
+
+
+            if (
+                resizeWidth > 0 &&
+                resizeWidth < img.width
+            ) {
+
+                width = resizeWidth;
+
+                height =
+                    Math.round(
+                        img.height *
+                        (resizeWidth / img.width)
+                    );
+
+            }
+
+
+            canvas.width = width;
+            canvas.height = height;
+
+
+            ctx.drawImage(
+                img,
+                0,
+                0,
+                width,
+                height
+            );
+
+
+            /* Compression */
 
             let quality = 0.9;
 
+
             function compress() {
 
-                canvas.toBlob(function(blob) {
+                canvas.toBlob(
+                    function (blob) {
 
-                    if (blob.size <= targetBytes || quality <= 0.1) {
+                        if (!blob) {
 
-                        const url = URL.createObjectURL(blob);
+                            alert(
+                                "Could not compress " +
+                                file.name
+                            );
 
-                        const originalKB =
-                            (file.size / 1024).toFixed(1);
+                            URL.revokeObjectURL(
+                                imageURL
+                            );
 
-                        const compressedKB =
-                            (blob.size / 1024).toFixed(1);
+                            resolve();
 
-                        const reduction =
-                            ((1 - blob.size / file.size) * 100)
-                            .toFixed(1);
+                            return;
 
-                        const result =
-                            document.getElementById("result");
+                        }
 
-                        result.innerHTML += `
 
-                            <div style="
-                                border:1px solid #ddd;
-                                padding:15px;
-                                margin:15px 0;
-                                border-radius:10px;
-                            ">
+                        if (
+                            blob.size <= targetBytes ||
+                            quality <= 0.1
+                        ) {
 
-                                <h3>${file.name}</h3>
+                            showResult(
+                                file,
+                                blob,
+                                width,
+                                height
+                            );
 
-                                <p>
-                                Original:
-                                ${originalKB} KB
-                                </p>
 
-                                <p>
-                                Compressed:
-                                ${compressedKB} KB
-                                </p>
+                            URL.revokeObjectURL(
+                                imageURL
+                            );
 
-                                <p>
-                                Reduced:
-                                ${reduction}%
-                                </p>
 
-                                <img
-                                src="${url}"
-                                style="max-width:200px;"
-                                >
+                            resolve();
 
-                                <br><br>
+                            return;
 
-                                <a
-                                href="${url}"
-                                download="compressed-${file.name}"
-                                >
+                        }
 
-                                <button>
-                                Download
-                                </button>
 
-                                </a>
+                        quality -= 0.1;
 
-                            </div>
-                        `;
+                        compress();
 
-                        resolve();
-                        return;
-                    }
+                    },
+                    "image/jpeg",
+                    quality
+                );
 
-                    quality -= 0.1;
-
-                    compress();
-
-                }, "image/jpeg", quality);
             }
 
+
             compress();
+
         };
 
-        img.src = URL.createObjectURL(file);
+
+        img.onerror = function () {
+
+            alert(
+                "Could not read " +
+                file.name
+            );
+
+            URL.revokeObjectURL(
+                imageURL
+            );
+
+            resolve();
+
+        };
+
+
+        img.src = imageURL;
+
     });
+
 }
+
+
+/* =========================
+   SHOW RESULT
+========================= */
+
+function showResult(
+    file,
+    blob,
+    width,
+    height
+) {
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const originalKB =
+        (file.size / 1024).toFixed(1);
+
+
+    const compressedKB =
+        (blob.size / 1024).toFixed(1);
+
+
+    let reduction =
+        (
+            (1 - blob.size / file.size) *
+            100
+        ).toFixed(1);
+
+
+    if (reduction < 0) {
+
+        reduction = "0.0";
+
+    }
+
+
+    const result =
+        document.getElementById("result");
+
+
+    result.innerHTML += `
+
+        <div class="result-card">
+
+            <h3>
+                ${escapeHTML(file.name)}
+            </h3>
+
+            <p>
+                <strong>Original:</strong>
+                ${originalKB} KB
+            </p>
+
+            <p>
+                <strong>Compressed:</strong>
+                ${compressedKB} KB
+            </p>
+
+            <p>
+                <strong>Saved:</strong>
+                ${reduction}%
+            </p>
+
+            <p>
+                <strong>Dimensions:</strong>
+                ${width} × ${height}px
+            </p>
+
+            <img
+                src="${url}"
+                alt="Compressed image"
+            >
+
+            <a
+                class="download-btn"
+                href="${url}"
+                download="compressed-${file.name}"
+            >
+                ⬇️ Download
+            </a>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================
+   RESET
+========================= */
+
 function resetTool() {
 
-    document.getElementById("imageInput").value = "";
+    document.getElementById(
+        "imageInput"
+    ).value = "";
 
-    document.getElementById("result").innerHTML = "";
+
+    document.getElementById(
+        "resizeWidth"
+    ).value = "";
+
+
+    document.getElementById(
+        "result"
+    ).innerHTML = "";
 
 }
+
+
+/* =========================
+   SECURITY
+========================= */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+
+}
+
 </script>
 
 </body>
+
 </html>
