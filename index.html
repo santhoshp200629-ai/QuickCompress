@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Compress</title>
+<p>
+Compress JPG, PNG and other images quickly.
+Reduce file size while keeping good quality.
+</p>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f5f5f5;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .box {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        input {
+            margin: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        img {
+            max-width: 100%;
+            margin-top: 20px;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+  select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+button {
+    background: #222;
+    color: white;
+    font-size: 16px;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+#result p {
+    font-size: 16px;
+}
+
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <h1>Image Compressor</h1>
+
+    <p>Reduce your image size easily</p>
+
+<div id="dropZone" style="
+    border:2px dashed #888;
+    padding:30px;
+    margin:20px 0;
+    border-radius:12px;
+    cursor:pointer;
+">
+    <h3>Drag & Drop Images Here</h3>
+    <p>or click to select images</p>
+</div>
+
+    <input type="file" id="imageInput" accept="image/*" multiple>
+<br>
+	const dropZone = document.getElementById("dropZone");
+const imageInput = document.getElementById("imageInput");
+
+dropZone.onclick = function () {
+    imageInput.click();
+};
+
+dropZone.ondragover = function (e) {
+    e.preventDefault();
+};
+
+dropZone.ondrop = function (e) {
+    e.preventDefault();
+    imageInput.files = e.dataTransfer.files;
+};
+    <br>
+
+   <label>Target Size:</label>
+
+<select id="targetSize">
+    <option value="100">100 KB</option>
+    <option value="200">200 KB</option>
+    <option value="500">500 KB</option>
+    <option value="1024">1 MB</option>
+</select>
+    <br>
+
+    <button onclick="compressImage()">Compress Image</button>
+
+    <div id="result"></div>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+
+</div>
+
+<script>
+
+async function compressImage() {
+
+    const files = document.getElementById("imageInput").files;
+    const targetKB = Number(document.getElementById("targetSize").value);
+    const targetBytes = targetKB * 1024;
+
+    if (files.length === 0) {
+        alert("Please select images");
+        return;
+    }
+
+    const result = document.getElementById("result");
+    result.innerHTML = "<h3>Compressing...</h3>";
+
+    for (const file of files) {
+
+        await compressSingleImage(file, targetBytes);
+    }
+}
+
+
+function compressSingleImage(file, targetBytes) {
+
+    return new Promise((resolve) => {
+
+        const img = new Image();
+
+        img.onload = function () {
+
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            ctx.drawImage(img, 0, 0);
+
+            let quality = 0.9;
+
+            function compress() {
+
+                canvas.toBlob(function(blob) {
+
+                    if (blob.size <= targetBytes || quality <= 0.1) {
+
+                        const url = URL.createObjectURL(blob);
+
+                        const originalKB =
+                            (file.size / 1024).toFixed(1);
+
+                        const compressedKB =
+                            (blob.size / 1024).toFixed(1);
+
+                        const reduction =
+                            ((1 - blob.size / file.size) * 100)
+                            .toFixed(1);
+
+                        const result =
+                            document.getElementById("result");
+
+                        result.innerHTML += `
+
+                            <div style="
+                                border:1px solid #ddd;
+                                padding:15px;
+                                margin:15px 0;
+                                border-radius:10px;
+                            ">
+
+                                <h3>${file.name}</h3>
+
+                                <p>
+                                Original:
+                                ${originalKB} KB
+                                </p>
+
+                                <p>
+                                Compressed:
+                                ${compressedKB} KB
+                                </p>
+
+                                <p>
+                                Reduced:
+                                ${reduction}%
+                                </p>
+
+                                <img
+                                src="${url}"
+                                style="max-width:200px;"
+                                >
+
+                                <br><br>
+
+                                <a
+                                href="${url}"
+                                download="compressed-${file.name}"
+                                >
+
+                                <button>
+                                Download
+                                </button>
+
+                                </a>
+
+                            </div>
+                        `;
+
+                        resolve();
+                        return;
+                    }
+
+                    quality -= 0.1;
+
+                    compress();
+
+                }, "image/jpeg", quality);
+            }
+
+            compress();
+        };
+
+        img.src = URL.createObjectURL(file);
+    });
+}
+function resetTool() {
+
+    document.getElementById("imageInput").value = "";
+
+    document.getElementById("result").innerHTML = "";
+
+}
+</script>
+
+</body>
+</html>
